@@ -1,0 +1,13 @@
+/* Styles go here */
+
+.contact-sheet-item {
+  border: 1px solid black;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+}
+
+.selected {
+  border: 5px solid black;
+}
