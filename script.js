@@ -26,6 +26,10 @@ angular
       return Object.keys(this.selectedContributions).length;
     }
 
+    contributionsCount() {
+      return this.contributions.length;
+    }
+
     mapStateToThis(state) {
       return {
         contributions: state.contributions,
