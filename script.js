@@ -14,6 +14,9 @@ angular
   })
   .controller('ContactSheetCtrl', function ContactSheetCtrl($ngRedux) {
     this.$ngRedux = $ngRedux;
+    this.selectedCount = function() {
+      return Object.keys(this.selectedContributions).length;
+    };
     this.mapStateToThis = function(state) {
       return {
         contributions: state.contributions,

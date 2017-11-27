@@ -17,7 +17,7 @@
         on-contribution-selected="vm.selectContribution($locals)"
         on-contribution-deselected="vm.deselectContribution($locals)">
       </contact-sheet>
-      <label>Selected Contributions: {{ vm.selectedContributions }}</label>
+      <label>Selected Contributions: {{ vm.selectedCount() }}</label>
     </div>
     <script src="selectedContributions.reducer.js"></script>
     <script src="contributions.reducer.js"></script>
