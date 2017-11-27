@@ -12,7 +12,7 @@ angular
     var contributions = [ { _id: 1, imageUrl: 'foo' }, { _id: 2, imageUrl: 'bar' }, { _id: 3, imageUrl: 'baz' }, { _id: 4, imageUrl: 'chic' }, { _id: 5, imageUrl: 'le' } ];
     contributions.forEach(c => $ngRedux.dispatch(contributionActions.add(c)));
   })
-  .controller('ContactSheetCtrl', class ContactSheetCtrl {
+  .controller('ContactSheetCtrl', class ContactSheetController {
     constructor($ngRedux) {
       this.$ngRedux = $ngRedux;
       this.unsubscribe = $ngRedux.connect(this.mapStateToThis, {})(this);
@@ -53,7 +53,7 @@ angular
       onContributionSelected: "&",
       onContributionDeselected: "&",
     },
-    controller: class contactSheetItemCtrl {
+    controller: class contactSheetItemController {
       constructor() {
         this.isSelected = false;
       }
