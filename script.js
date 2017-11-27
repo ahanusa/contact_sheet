@@ -12,25 +12,36 @@ angular
     var contributions = [ { _id: 1, imageUrl: 'foo' }, { _id: 2, imageUrl: 'bar' }, { _id: 3, imageUrl: 'baz' }, { _id: 4, imageUrl: 'chic' }, { _id: 5, imageUrl: 'le' } ];
     contributions.forEach(c => $ngRedux.dispatch(contributionActions.add(c)));
   })
-  .controller('ContactSheetCtrl', function ContactSheetCtrl($ngRedux) {
-    this.$ngRedux = $ngRedux;
-    this.selectedCount = function() {
+  .controller('ContactSheetCtrl', class ContactSheetCtrl {
+    constructor($ngRedux) {
+      this.$ngRedux = $ngRedux;
+      this.unsubscribe = $ngRedux.connect(this.mapStateToThis, {})(this);
+    }
+
+    $onDestroy() {
+      this.unsubscribe();
+    }
+
+    selectedCount() {
       return Object.keys(this.selectedContributions).length;
-    };
-    this.mapStateToThis = function(state) {
+    }
+
+    mapStateToThis(state) {
       return {
         contributions: state.contributions,
         selectedContributions: state.selectedContributions
       };
-    };
-    this.unsubscribe = $ngRedux.connect(this.mapStateToThis, {})(this);
-    this.selectContribution = function (contribution) {
+    }
+
+    selectContribution(contribution) {
       this.$ngRedux.dispatch(contributionActions.select(contribution));
-    };
-    this.deselectContribution = function (contribution) {
+    }
+
+    deselectContribution(contribution) {
       this.$ngRedux.dispatch(contributionActions.deselect(contribution));
-    };
-    this.addContribution = function () {
+    }
+
+    addContribution() {
       var key = uuid();
       var contribution = { _id: key, imageUrl: 'fff' };
       this.$ngRedux.dispatch(contributionActions.add(contribution));
@@ -42,16 +53,19 @@ angular
       onContributionSelected: "&",
       onContributionDeselected: "&",
     },
-    controller: function() {
-      this.isSelected = false;
-      this.itemClicked = function (event) {
+    controller: class contactSheetItemCtrl {
+      constructor() {
+        this.isSelected = false;
+      }
+
+      itemClicked(event) {
         this.isSelected = !this.isSelected;
         if (!this.isSelected) {
           this.onContributionDeselected(event);
         } else {
           this.onContributionSelected(event);
         }
-      };
+      }
     },
     template: `<div class="contact-sheet-item"
          ng-class="{ selected: $ctrl.isSelected }"
