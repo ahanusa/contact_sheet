@@ -1,79 +1,72 @@
-// Code goes here
 
 angular
-  .module('ContactSheet', [])
-  .controller('CountCtrl', function CountCtrl() {
-    this.contributions = [
-      {
-        _id: 1,
-        imageUrl: 'foo'
-      }, {
-        _id: 2,
-        imageUrl: 'bar'
-      }, {
-        _id: 3,
-        imageUrl: 'baz'
-      }, {
-        _id: 4,
-        imageUrl: 'chic'
-      }, {
-        _id: 5,
-        imageUrl: 'le'
-      }
-    ];
-    this.selectContribution = function (event) {
-      console.log("SELECTED!!", event);
+  .module('ContactSheet', ['ngRedux'])
+  .config(($ngReduxProvider) => {
+    var rootReducer = Redux.combineReducers({
+      contributions: contributionsReducer,
+      selectedContributions: selectedContributionsReducer
+    });
+    $ngReduxProvider.createStoreWith(rootReducer);
+  })
+  .run(($ngRedux) => {
+    var contributions = [ { _id: 1, imageUrl: 'foo' }, { _id: 2, imageUrl: 'bar' }, { _id: 3, imageUrl: 'baz' }, { _id: 4, imageUrl: 'chic' }, { _id: 5, imageUrl: 'le' } ];
+    contributions.forEach(c => $ngRedux.dispatch(contributionActions.add(c)));
+  })
+  .controller('ContactSheetCtrl', function ContactSheetCtrl($ngRedux) {
+    this.$ngRedux = $ngRedux;
+    this.mapStateToThis = function(state) {
+      return {
+        contributions: state.contributions,
+        selectedContributions: state.selectedContributions
+      };
+    };
+    this.unsubscribe = $ngRedux.connect(this.mapStateToThis, {})(this);
+    this.selectContribution = function (contribution) {
+      this.$ngRedux.dispatch(contributionActions.select(contribution));
+    };
+    this.deselectContribution = function (contribution) {
+      this.$ngRedux.dispatch(contributionActions.deselect(contribution));
     };
     this.addContribution = function () {
       var key = uuid();
-      var contribution = {
-        _id: key,
-        imageUrl: 'fff'
-      };
-      this
-        .contributions
-        .push(contribution);
+      var contribution = { _id: key, imageUrl: 'fff' };
+      this.$ngRedux.dispatch(contributionActions.add(contribution));
     };
   })
   .component('contactSheetItem', {
     bindings: {
       contribution: '=',
-      onContributionSelected: "&"
+      onContributionSelected: "&",
+      onContributionDeselected: "&",
     },
-    controller: function () {
+    controller: function() {
       this.isSelected = false;
-      this.selectItem = function (event) {
+      this.itemClicked = function (event) {
         this.isSelected = !this.isSelected;
-        this.onContributionSelected(event);
+        if (!this.isSelected) {
+          this.onContributionDeselected(event);
+        } else {
+          this.onContributionSelected(event);
+        }
       };
     },
     template: `<div class="contact-sheet-item"
          ng-class="{ selected: $ctrl.isSelected }"
-         ng-click="$ctrl.selectItem({ $event: $ctrl.contribution })"
+         ng-click="$ctrl.itemClicked({ $event: $ctrl.contribution })"
          >{{ $ctrl.contribution.imageUrl }}
       </div>`
   })
   .component('contactSheet', {
     bindings: {
       contributions: '<',
-      onContributionSelected: "&"
-    },
-    controller: function () {
-      function onChanges(a) {
-        console.log("a", a);
-        console.log("CHANGES!", this.contributions.length);;
-        // console.log("Is First Change!", isFirstChange);
-      }
-      function onInit() {
-        console.log("ON INIT", this.contributions.length);
-      }
-      this.$onChanges = onChanges;
-      this.$onInit = onInit;
+      onContributionSelected: "&",
+      onContributionDeselected: "&"
     },
     template: `<div class="contactSheet">
         <contact-sheet-item ng-repeat="cont in $ctrl.contributions"
           contribution="cont"
           on-contribution-selected="$ctrl.onContributionSelected($event)"
+          on-contribution-deselected="$ctrl.onContributionDeselected($event)"
         </contact-sheet-item>
       </div>`
   });

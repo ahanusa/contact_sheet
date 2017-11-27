@@ -4,17 +4,24 @@
   <head>
     <script data-require="angular.js@1.6.0" data-semver="1.6.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.js"></script>
     <script data-require="uuid@*" data-semver="1.4.7" src="https://cdnjs.cloudflare.com/ajax/libs/node-uuid/1.4.7/uuid.min.js"></script>
+    <script src="./node_modules/redux/dist/redux.js"></script>
+    <script src="./node_modules/ng-redux/dist/ng-redux.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <div ng-controller="CountCtrl as vm">
+    <div ng-controller="ContactSheetCtrl as vm">
       <button ng-click="vm.addContribution()">Add</button>
       <contact-sheet
         contributions="vm.contributions"
-        on-contribution-selected="vm.selectContribution($locals)">
+        on-contribution-selected="vm.selectContribution($locals)"
+        on-contribution-deselected="vm.deselectContribution($locals)">
       </contact-sheet>
+      <label>Selected Contributions: {{ vm.selectedContributions }}</label>
     </div>
+    <script src="selectedContributions.reducer.js"></script>
+    <script src="contributions.reducer.js"></script>
+    <script src="contributions.actions.js"></script>
     <script src="script.js"></script>
   </body>
 
