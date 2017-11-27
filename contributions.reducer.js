@@ -6,7 +6,7 @@ var contributionsReducer = (() => {
       case "ADD":
         return [...state, action.contribution];
       case "REMOVE":
-        return [...state.filter(c => c.id !== action.id)]
+        return [...state.filter(c => c._id != action.id)]
       default:
         return state
     }

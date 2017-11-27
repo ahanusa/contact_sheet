@@ -45,7 +45,13 @@ angular
       var key = uuid();
       var contribution = { _id: key, imageUrl: 'fff' };
       this.$ngRedux.dispatch(contributionActions.add(contribution));
-    };
+    }
+
+    removeSelected() {
+      Object.keys(this.selectedContributions).forEach(key => {
+        this.$ngRedux.dispatch(contributionActions.remove(key));
+      });
+    }
   })
   .component('contactSheetItem', {
     bindings: {

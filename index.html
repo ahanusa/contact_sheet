@@ -12,6 +12,7 @@
   <body>
     <div ng-controller="ContactSheetCtrl as vm">
       <button ng-click="vm.addContribution()">Add</button>
+      <button ng-click="vm.removeSelected()">Remove</button>
       <contact-sheet
         contributions="vm.contributions"
         on-contribution-selected="vm.selectContribution($locals)"
